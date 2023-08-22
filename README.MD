@@ -6,5 +6,3 @@
 - p01-Hola-Mundo
 - p02-Paga-Trabajador
 - p03-Venta-Pizza
-
-Prueba
