@@ -37,3 +37,6 @@
 
 - p16-control-ventas-v1
 
+## Examen Parcial 1
+
+- p17-primer-examen-parcial
