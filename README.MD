@@ -51,3 +51,10 @@
 
 - p21-linq4
 - p22-linq5
+
+## Actividad 8
+
+- p23-BlazorApp
+- 
+
+
