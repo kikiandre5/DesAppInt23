@@ -55,6 +55,6 @@
 ## Actividad 8
 
 - p23-BlazorApp
-- 
+- p24-ToDoList
 
 
