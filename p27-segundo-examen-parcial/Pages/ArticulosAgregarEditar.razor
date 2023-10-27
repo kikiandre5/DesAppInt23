@@ -1,0 +1,91 @@
+@page "/articulo/agregar"
+@page "/articulo/editar/{Id:int}"
+@inject ArticuloServicio articuloServicio
+@inject NavigationManager NavigationManager
+
+<h3>@Titulo</h3>
+<div class="row">
+    <div class="col-md-6">
+        <EditForm Model="@articulo" OnValidSubmit="Grabar">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label for="Descripcion">Descripción</label>
+                <InputText class="form-control" @bind-Value="articulo.Descripcion" />
+                <ValidationMessage For="@(()=>articulo.Descripcion)" />
+            </div>
+            <div class="form-group">
+                <label for="FechaAlta">Fecha Alta</label>
+                <InputDate class="form-control" @bind-Value="articulo.FechaAlta" />
+                <ValidationMessage For="@(()=>articulo.FechaAlta)" />
+            </div>
+            <div class="form-group">
+                <label for="Cantidad">Cantidad</label>
+                <InputNumber class="form-control" @bind-Value="articulo.Cantidad" />
+                <ValidationMessage For="@(()=>articulo.Cantidad)" />
+            </div>
+            <div class="form-group">
+                <label for="Precio">Precio</label>
+                <InputNumber class="form-control" @bind-Value="articulo.Precio" />
+                <ValidationMessage For="@(()=>articulo.Precio)" />
+            </div>
+            <div class="form-group">
+                <label for="UdeMedida">Unidad de Medida</label>
+                <select @bind="@articulo.UdeMedida" class="form-control">
+                    <option value="metro">Metro</option>
+                    <option value="Litro">Litro</option>
+                    <option value="Kilo">Kilo</option>
+                    <option value="Pieza">Pieza</option>
+                    <option value="Caja">Caja</option>
+                </select>
+                <ValidationMessage For="@(()=>articulo.UdeMedida)" />
+            </div>
+            <div>
+                @mensaje
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Grabar</button>
+                        <button type="button" class="btn btn-primary" @onclick="Cancel">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    Articulo articulo = new Articulo();
+    private string mensaje = string.Empty;
+    private string Titulo = "Agregar Articulo";
+
+    protected void Grabar()
+    {
+        if (articuloServicio.AgregarActualizar(articulo))
+        {
+            mensaje = "Agregado exitosamente";
+        }
+        else
+        {
+            mensaje = "No se pudo agregar/actualizar";
+        }
+        NavigationManager.NavigateTo("articulos", forceLoad: true);
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("articulos", forceLoad: true);
+    }
+
+    protected override void OnInitialized()
+    {
+        if (Id > 0)
+        {
+            Titulo = "Actualizar Articulo";
+            articulo = articuloServicio.EncontrarPorId(Id);
+        }
+        base.OnInitialized();
+    }
+}

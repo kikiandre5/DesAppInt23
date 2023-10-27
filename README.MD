@@ -61,3 +61,9 @@
 ## Actividad 9
 
 - p25-Crud
+z
+## Tarea 03
+
+## Examen Parcial 2
+
+- p27-segundo-examen-parcial

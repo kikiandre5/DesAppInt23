@@ -1,0 +1,68 @@
+@page "/articulos"
+@inject ArticuloServicio articuloServicio
+@inject IJSRuntime jsRuntime
+<h3>Articulos</h3>
+<NavLink class="nav-link" href="articulo/agregar">
+    <span class="oi oi-plus" aria-hidden="true">Agregar Articulo</span>
+</NavLink>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Fecha Alta</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Unidad de Medida</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var articulo in articulos)
+                {
+                    <tr>
+                        <td>@articulo.Descripcion</td>
+                        <td>@articulo.FechaAlta.ToString("dd/MM/yyyy")</td>
+                        <td>@articulo.Cantidad</td>
+                        <td>@articulo.Precio</td>
+                        <td>@articulo.UdeMedida</td>
+                        <td>
+                            <a href="articulo/editar/@articulo.Id" class="btn btn-success">Editar</a>
+                            <a class="btn btn-danger" @onclick="async () => await Borrar(articulo)">Borrar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<p role="status">Total Inventario: @currentCount</p>
+
+@code {
+
+    private int currentCount = 0;
+
+    private List<Articulo> articulos = new();
+
+    protected override void OnInitialized()
+    {
+        articulos = articuloServicio.ObtenerTodo();
+        foreach (var articulo in articulos){
+            currentCount += articulo.Cantidad;
+        }
+    }
+
+    private async Task Borrar(Articulo articulo)
+    {
+        bool confirmed = await jsRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro?");
+        if (confirmed)
+        {
+            if (articuloServicio.Borrar(articulo.Id))
+            {
+                articulos.Remove(articulo);
+            }
+        }
+    }
+}
