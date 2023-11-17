@@ -73,3 +73,8 @@
 ## Actividad 11
 
 - p29-crud-universidad-p2
+
+## Examen Parcial 3
+
+- p30-tercer-examen-parcial
+

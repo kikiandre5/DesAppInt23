@@ -1,0 +1,113 @@
+@* Pages/Clientes.razor *@
+@page "/clientes"
+@inject ClienteServicio clienteServicio
+@inject IJSRuntime jsRuntime
+
+<h3>Clientes</h3>
+
+<NavLink class="nav-link" href="cliente/agregar">
+<span class="oi oi-plus" aria-hidden="true">Agregar cliente</span>
+</NavLink>
+<label>Buscar cliente:</label>
+<input type="text" @oninput="@( (e) => Filtro(e) )">
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                <th>Nombre</th>
+                <th>Apeido</th>
+                <th>Genero</th>
+                <th>Fecha Cumple</th>
+                <th>Correo</th>
+                <th>Telefono</th>
+                <th>Nombre Completo</th>
+                <th>Edad</th>
+                <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cliente in clientes)
+                {
+                <tr>
+                    <td>@cliente.Nombre</td>
+                    <td>@cliente.Apellido</td>
+                    <td>@cliente.Genero</td>
+                    <td>@cliente.FechaCumple.ToString("dd-MM-yyyy")</td>
+                    <td>@cliente.Correo</td>
+                    <td>@cliente.Telefono</td>
+                    <td>@cliente.NombreCompleto</td>
+                    <td>@cliente.ObtenerEdadEnAños()</td>
+                    <td>
+                        <a href="cliente/editar/@cliente.Id" class="btn btn-success">Editar</a>
+                        <a class="btn btn-danger" @onclick="async ()=> await Borrar(cliente)">Borrar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+        <p>Clientes = @TotalC().ToString()</p> 
+        <p>Promedio Edad = @TotalE().ToString()</p>
+        <p>Mujeres = @TotalF().ToString()</p>
+        <p>Hombres = @TotalM().ToString()</p>
+    </div>
+</div>
+
+@code {
+    private List<Cliente> clientes = new();
+
+    protected override void OnInitialized() {
+        clientes = clienteServicio.ObtenerTodo("");
+    }
+
+    private async Task Borrar(Cliente cliente) {
+        bool confirmed = await jsRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro?");
+        if (confirmed)
+            if(clienteServicio.Borrar(cliente.Id))
+                clientes.Remove(cliente);
+    }
+
+    protected void Filtro(ChangeEventArgs e) {
+        string cadenabuscar = e.Value.ToString();
+        clientes = clienteServicio.ObtenerTodo(cadenabuscar);
+    }
+
+    private int cltot = 0;
+    private double TotalC() {
+        foreach (var cliente in clientes){
+            cltot += 1;
+        }
+        return cltot;
+    }
+
+    private double edadCl = 0;
+    private double TotalE() {
+        foreach(var cliente in clientes){
+            edadCl += cliente.ObtenerEdadEnAños();
+        }
+        return (int)edadCl/cltot;
+    }
+
+    private int contM = 0;
+    private double TotalM() {
+        foreach(var cliente in clientes){
+            if(cliente.Genero == 'M'){
+                contM++;
+            }
+        }
+        return contM;
+    }
+
+    private int contF = 0;
+    private double TotalF() {
+        foreach(var cliente in clientes){
+            if(cliente.Genero == 'F'){
+                contF++;
+            }
+        }
+        return contF;
+    }
+
+        
+}
