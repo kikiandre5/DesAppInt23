@@ -26,11 +26,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 using (var scope = app.Services.CreateScope()) {
-    var servicios = scope.ServiceProvider;
-    var contexto = servicios.GetRequiredService<ContextoDatos>();
-    contexto.Database.EnsureCreated();
-    //InicializadorBD.Inicializar(contexto);
+var servicios = scope.ServiceProvider;
+var contexto = servicios.GetRequiredService<ContextoDatos>();
+contexto.Database.EnsureCreated();
+InicializadorBD.Inicializar(contexto);
 }
+
 
 app.UseStaticFiles();
 
